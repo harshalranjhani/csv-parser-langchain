@@ -1,18 +1,34 @@
 from fastapi import FastAPI, File, UploadFile
 import pandas as pd
 from sqlalchemy import Table, Column, Integer, String, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
 import io
-import requests
-from db import Base, engine, SessionLocal
+from db import engine
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+import openai
+from dotenv import load_dotenv
 
-# Initiate FastAPI app
+# Load environment variables
+load_dotenv()
+
+# Initialize FastAPI app
 app = FastAPI()
 
+# Define the prompt template
+prompt_template = PromptTemplate(template="Is the following company a technology company? {description}\nAnswer 'yes' or 'no':")
+
+# Initialize the OpenAI LLM
+llm = OpenAI(temperature=0.7)
+
+# Create the LLMChain
+chain = LLMChain(prompt=prompt_template, llm=llm)
+
 def call_llm_to_check_tech_company(description):
-    # TODO
-    return "yes"
+    response = chain.run({"description": description})
+    answer = response.lower().strip()
+    print(f"Description: {description}, Answer: {answer}")
+    return "yes" if answer == "yes" else "no"
 
 @app.post("/uploadcsv")
 async def upload_csv(file: UploadFile = File(...)):
@@ -23,7 +39,7 @@ async def upload_csv(file: UploadFile = File(...)):
     # Add "Technology Company" column
     df['Technology Company'] = df['Description'].apply(lambda d: call_llm_to_check_tech_company(d))
     
-    # Dynamically create table schema using the column names from the CSV
+    # Dynamically create table schema
     metadata = MetaData()
     columns = [Column(c, String) for c in df.columns]
     schema_table = Table('companies', metadata, Column('id', Integer, primary_key=True, autoincrement=True), *columns)

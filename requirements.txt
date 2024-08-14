@@ -4,4 +4,7 @@ pandas
 sqlalchemy
 requests
 asyncio
-google-generativeai
+langchain 
+langchain-openai
+python-multipart
+python-dotenv
