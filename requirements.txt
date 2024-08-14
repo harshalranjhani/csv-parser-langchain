@@ -9,3 +9,4 @@ langchain-openai
 python-multipart
 python-dotenv
 streamlit
+langchain_community

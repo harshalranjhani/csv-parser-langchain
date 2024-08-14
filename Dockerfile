@@ -1,12 +1,13 @@
-FROM python:3.9
+FROM python:3.9-slim
 
 WORKDIR /
 
-COPY . /
+COPY requirements.txt .
 
-RUN pip install --no-cache-dir fastapi sqlalchemy pandas uvicorn requests asyncio \
-    langchain langchain-openai python-multipart python-dotenv streamlit
+RUN pip install -r requirements.txt
 
-EXPOSE 80
+COPY . .
 
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 80 & streamlit run app.py"]
+EXPOSE 8080
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
