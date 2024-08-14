@@ -4,7 +4,7 @@ import pandas as pd
 from io import BytesIO
 
 # Set the FastAPI endpoint
-FASTAPI_UPLOAD_ENDPOINT = "http://127.0.0.1:8000/upload"
+FASTAPI_UPLOAD_ENDPOINT = "http://0.0.0.0:8080/upload"
 
 # Define the Streamlit app layout
 st.title("CSV Upload and Processing App")
