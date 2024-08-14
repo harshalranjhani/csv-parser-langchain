@@ -5,7 +5,7 @@ WORKDIR /
 COPY . /
 
 RUN pip install --no-cache-dir fastapi sqlalchemy pandas uvicorn requests asyncio \
-    langchain langchain-openai python-multipart python-dotenv
+    langchain langchain-openai python-multipart python-dotenv streamlit
 
 EXPOSE 80
 
